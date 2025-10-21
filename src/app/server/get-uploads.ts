@@ -17,6 +17,7 @@ type GetUploadsInput = z.input<typeof getUploadsInput>
 type GetUploadsOutput = {
   uploads: {
     id: string
+    name: string
     remoteKey: string
     remoteUrl: string
     createdAt: Date
@@ -34,10 +35,10 @@ export async function getUploads(
     db
       .select({
         id: schema.uploads.id,
+        name: schema.uploads.name,
         remoteKey: schema.uploads.remoteKey,
         remoteUrl: schema.uploads.remoteUrl,
         createdAt: schema.uploads.createdAt,
-        name: schema.uploads.name
       })
       .from(schema.uploads)
       .where(
