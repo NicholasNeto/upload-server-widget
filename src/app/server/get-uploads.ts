@@ -37,6 +37,7 @@ export async function getUploads(
         remoteKey: schema.uploads.remoteKey,
         remoteUrl: schema.uploads.remoteUrl,
         createdAt: schema.uploads.createdAt,
+        name: schema.uploads.name
       })
       .from(schema.uploads)
       .where(
