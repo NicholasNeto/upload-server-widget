@@ -1,11 +1,14 @@
-import { db, pg } from "@/infra/db"
-import { schema } from "@/infra/db/schemas"
-import { Either, makeRight } from "@/shared/either"
 import { z } from "zod"
 import { ilike } from "drizzle-orm"
-import { stringify } from "csv-stringify"
-import { PassThrough, Transform } from "node:stream"
 import { pipeline } from "node:stream/promises"
+import { PassThrough, Transform } from "node:stream"
+
+import type { Either } from "@/shared/either"
+
+import { db, pg } from "@/infra/db"
+import { schema } from "@/infra/db/schemas"
+import { makeRight } from "@/shared/either"
+import { stringify } from "csv-stringify"
 import { uploadFileStorageInput } from "@/infra/storage/upload-file-to-storage"
 
 const exportUploadsInput = z.object({
@@ -63,7 +66,6 @@ export async function exportUploads(
         for (const chunck of chunks) {
           this.push(chunck)
         }
-
         callback()
       },
     }),
@@ -71,22 +73,14 @@ export async function exportUploads(
     uploadToStorageStream
   )
 
-  // const uploadToStorage = uploadFileStorageInput({
-  //   fileName: `${new Date().toISOString()}-uploads.csv`,
-  //   contentType: "text/csv",
-  //   folder: "downloads",
-  //   contentStream: uploadToStorageStream,
-  // })
+  const uploadToStorage = uploadFileStorageInput({
+    contentType: "text/csv",
+    folder: "downloads",
+    fileName: `${new Date().toISOString()}-uploads.csv`,
+    contentStream: uploadToStorageStream,
+  })
 
-  const teste = await convertToCsvPipeline
+  const [{ url }] = await Promise.all([uploadToStorage, convertToCsvPipeline])
 
-  // const [{ url }] = await Promise.all([uploadToStorage, convertToCsvPipeline])
-
-  // for await (const rowns of cursor) {
-  //   console.log("--->", rowns)
-  // }
-
-  console.log("teste", teste)
-
-  return makeRight({ reportUrl: "url" })
+  return makeRight({ reportUrl: url })
 }
