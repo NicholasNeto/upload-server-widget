@@ -1,14 +1,10 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from "tsup"
 
 export default defineConfig({
-  entry: ['src/index.ts'],
-  outDir: 'dist',
-  bundle: true,
-  splitting: false,
-  sourcemap: true,
-  clean: true,
-  format: ['esm', 'cjs'],
+  entry: ["src"],
+  format: ["esm"],
   loader: {
-    '.sql': 'text',
+    ".sql": "file",
   },
-});
+  external: ["drizzle-kit"],
+})
