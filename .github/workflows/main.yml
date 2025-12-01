@@ -32,6 +32,10 @@ jobs:
         id: checkout
         uses: actions/checkout@v4
 
+        # 1) Copiar .env.test aqui
+      - name: Copy test env
+        run: cp .env.test.example .env.test
+
       - name: Configure Node
         id: configure-node
         uses: actions/setup-node@v4
@@ -44,11 +48,20 @@ jobs:
         with:
           version: 8
 
+        # 2) Instalar dependências
       - name: Install dependencies
         id: install-dependencies
         run: |
           pnpm install
-      
+
+        # 3) Subir serviços (ex: postgres)
+      - name: Start DB
+        run: docker-compose up -d
+
+        # 4) Rodar migrações
+      - name: Run migrations
+        run: npm run migrate:test
+
       - name: Run tests
         run: pnpm run test
 
