@@ -31,11 +31,7 @@ jobs:
       - name: Checkout
         id: checkout
         uses: actions/checkout@v4
-
-        # 1) Copiar .env.test aqui
-      - name: Copy test env
-        run: cp .env.test.example .env.test
-
+        
       - name: Configure Node
         id: configure-node
         uses: actions/setup-node@v4
