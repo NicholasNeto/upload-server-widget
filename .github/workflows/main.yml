@@ -50,13 +50,8 @@ jobs:
         run: |
           pnpm install
 
-        # 3) Subir serviços (ex: postgres)
-      # - name: Start DB
-      #   run: docker-compose up -d
-
         # 4) Rodar migrações
       - name: Run migrations
-        # run: npm run migrate:test
         run: pnpm run db:migrate:test
 
       - name: Run tests
@@ -73,6 +68,10 @@ jobs:
       - name: Login to AWS ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set up Docker Buildx
+        id: set-up-docker-buildx
+        uses: docker/setup-buildx-action@v3
       
       - name: Generate tag
         id: generate-tag
@@ -80,12 +79,13 @@ jobs:
           SHA=$(echo $GITHUB_SHA | head -c7)
           echo "sha=$SHA" >> $GITHUB_OUTPUT
 
-
-      - name: Build and push the image to AWS ECR
+      - name: Build and export image
         uses: docker/build-push-action@v6
         with:
           context: .
           load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
           tags: |
             ${{steps.login-ecr.outputs.registry}}/${{ vars.ECR_REPOSITORY }}:test
 
@@ -104,6 +104,7 @@ jobs:
         with:
           context: .
           push: true
+          cache-from: type=gha
           tags: |
             ${{steps.login-ecr.outputs.registry}}/${{ vars.ECR_REPOSITORY }}:${{ steps.generate-tag.outputs.sha }}
 
