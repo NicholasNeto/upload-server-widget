@@ -31,7 +31,7 @@ jobs:
       - name: Checkout
         id: checkout
         uses: actions/checkout@v4
-        
+
       - name: Configure Node
         id: configure-node
         uses: actions/setup-node@v4
@@ -51,8 +51,8 @@ jobs:
           pnpm install
 
         # 3) Subir serviços (ex: postgres)
-      - name: Start DB
-        run: docker-compose up -d
+      # - name: Start DB
+      #   run: docker-compose up -d
 
         # 4) Rodar migrações
       - name: Run migrations
