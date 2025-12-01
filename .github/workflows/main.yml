@@ -56,7 +56,8 @@ jobs:
 
         # 4) Rodar migrações
       - name: Run migrations
-        run: npm run migrate:test
+        # run: npm run migrate:test
+        run: pnpm run db:migrate:test
 
       - name: Run tests
         run: pnpm run test
