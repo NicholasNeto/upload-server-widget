@@ -1,5 +1,4 @@
-name: upload-server-widget
-
+name: upload-server-widget pipe ECR
 on: 
   push: 
     branches:
